@@ -1,19 +1,9 @@
 spring:
   application:
     name: oauth-code-client
-  datasource:
-    url: jdbc:mysql://localhost:3306/oauth2?characterEncoding=UTF-8&useSSL=false
-    username: root
-    password: dbadmin
-    hikari:
-      connection-timeout: 30000
-      idle-timeout: 600000
-      max-lifetime: 1800000
-      maximum-pool-size: 9
 
 server:
   port: 18080
-
 
 security:
   oauth2:
@@ -23,8 +13,7 @@ security:
       user-authorization-uri: http://localhost:8080/oauth/authorize
       access-token-uri: http://localhost:8080/oauth/token
     resource:
-      jwt:
-        key-uri: http://localhost:8080/oauth/token_key
-        key-value: oauth #这里要月jwt的签名配置一致
+      id: user-client
+      user-info-uri: user-info
     authorization:
       check-token-access: http://localhost:8080/oauth/check_token

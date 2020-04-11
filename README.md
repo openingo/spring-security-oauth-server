@@ -129,6 +129,32 @@ http://localhost:8080/oauth/token?grant_type=refresh_token&refresh_token={refres
 
 > 使用`TokenEnhancer`
 
+##### 自定义`access_token`和`refresh_token`
+
+```java
+public class JdbcTokenEnhancer implements TokenEnhancer {
+
+    @Override
+    public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
+        // 扩展信息
+        Map<String, Object> info = new HashMap<>();
+        info.put("uid", UUID.randomUUID());
+
+        DefaultOAuth2AccessToken at = (DefaultOAuth2AccessToken) accessToken;
+
+        // 配置扩展信息
+        at.setAdditionalInformation(info);
+        // 修改access_token值
+        at.setValue("prefix"+UUID.randomUUID().toString());
+        // 修改refresh_tokens
+        DefaultOAuth2RefreshToken refreshToken = new DefaultOAuth2RefreshToken("refresh_token:"+UUID.randomUUID());
+        at.setRefreshToken(refreshToken);
+        
+        return accessToken;
+    }
+}
+```
+
 
 
 #### TODO
