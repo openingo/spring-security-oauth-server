@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: spring-security-oauth-server
+  datasource:
+    url: jdbc:mysql://localhost:3306/oauth2?characterEncoding=UTF-8&useSSL=false
+    username: root
+    password: dbadmin
+    hikari:
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      maximum-pool-size: 9
+
+
+server:
+  port: 8080
+
+management:
+  endpoint:
+    health:
+      enabled: true
+
+mybatis-plus:
+  global-config:
+    db-config:
+      table-prefix: oauth_
+
+logging:
+  level:
+    #root: warn
+    cn.zhucongqi.oauth2.dao: trace
+#  pattern:
+#    console: '%p%m%n'
