@@ -1,5 +1,6 @@
 package cn.zhucongqi.oauth2.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,11 +22,8 @@ import org.springframework.security.oauth2.provider.token.RemoteTokenServices;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
-    @Value("${security.oauth2.client.client-id}")
-    private String clientId;
-
-    @Value("${security.oauth2.client.client-secret}")
-    private String secret;
+    @Autowired
+    private AuthorizationClient authorizationClient;
 
     @Value("${security.oauth2.authorization.check-token-access}")
     private String checkTokenEndpointUrl;
@@ -33,9 +31,9 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Bean
     public RemoteTokenServices remoteTokenServices() {
         RemoteTokenServices tokenService = new RemoteTokenServices();
-        tokenService.setClientId(clientId);
-        tokenService.setClientSecret(secret);
-        tokenService.setCheckTokenEndpointUrl(checkTokenEndpointUrl);
+        tokenService.setClientId(this.authorizationClient.getClientId());
+        tokenService.setClientSecret(this.authorizationClient.getClientSecret());
+        tokenService.setCheckTokenEndpointUrl(this.checkTokenEndpointUrl);
         return tokenService;
     }
 

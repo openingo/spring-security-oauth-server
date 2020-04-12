@@ -1,7 +1,9 @@
 package cn.zhucongqi.oauth2.controller;
 
+import cn.zhucongqi.oauth2.config.AuthorizationClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,6 +19,9 @@ import java.util.Map;
 @RestController
 public class CallbackController {
 
+    @Autowired
+    private AuthorizationClient authorizationClient;
+
     @GetMapping(value = "callback")
     public Object callback(String code) {
         Map resp = new HashMap();
@@ -28,7 +33,7 @@ public class CallbackController {
         OkHttpClient httpClient = new OkHttpClient();
         RequestBody body = new FormBody.Builder()
                 .add("grant_type", "authorization_code")
-                .add("client", "client-id")
+                .add("client", this.authorizationClient.getClientId())
             // 仅用于校验，不会再次redirect
                 .add("redirect_uri","http://localhost:18080/callback")
                 .add("code", code)
@@ -38,7 +43,7 @@ public class CallbackController {
                 .url(tokenUrl)
                 .post(body)
             //Authorization = "Basic Base64(client-id:client-secret)"
-                .addHeader("Authorization", "Basic Y2xpZW50LWlkOmNsaWVudC1zZWNyZXQ=")
+                .addHeader("Authorization", this.authorizationClient.getHeaderAuthorization())
                 .build();
         try {
             Response response = httpClient.newCall(request).execute();
